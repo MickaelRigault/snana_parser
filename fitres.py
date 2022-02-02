@@ -75,20 +75,20 @@ class FITRES():
         if filekeys is None:
             # vectorized version of int( file.split('/')[-2].split('-')[-1] )
             filekeys = np.asarray([file_.split("/")[-2].split("-")[-1]
-                                   for file_ in files],
+                                   for file_ in filenames],
                       dtype="int")
         
         if use_dask:
-            fileout = [dask.delayed(fitres.parse_fitresfile)(f_) for f_ in files]
+            fileout = [dask.delayed(fitres.parse_fitresfile)(f_) for f_ in filenames]
             if client is None:
                 alls = dask.delayed(list)(fileout).compute()
             else:
                 alls = client.gather(client.compute(fileout))
         else:
-            alls = [fitres.parse_fitresfile(f_) for f_ in files]
+            alls = [fitres.parse_fitresfile(f_) for f_ in filenames]
             
         data_all = pandas.concat([d_ for d_,i_ in alls], keys=filekeys)
-        fitparams = pandas.concat([i_ for d_,i_ in alls], axis=1,keys=filekeys)
+        fitparams = pandas.concat([i_ for d_,i_ in alls], axis=1, keys=filekeys)
         return cls(data_all, fitparams)
     
     @classmethod
