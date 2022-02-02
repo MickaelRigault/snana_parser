@@ -5,7 +5,7 @@ import pandas
 def read_wfit_file(filename):
     """ """
     return pandas.read_csv(filename, 
-                    sep=":", names=["parameter","value"], index_col=0)
+                    sep=":", names=["parameter","value"], index_col=0)["value"]
 
 def read_wfit_files(filenames, filekeys=None, use_dask=True, client=None):
     """ """
