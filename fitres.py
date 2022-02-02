@@ -79,6 +79,7 @@ class FITRES():
                       dtype="int")
         
         if use_dask:
+            import dask
             fileout = [dask.delayed(fitres.parse_fitresfile)(f_) for f_ in filenames]
             if client is None:
                 alls = dask.delayed(list)(fileout).compute()
