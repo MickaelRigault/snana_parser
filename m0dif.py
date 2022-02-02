@@ -41,12 +41,13 @@ class M0DIF():
             import dask
             outputs = []
             d_data = [dask.delayed(parse_m0dif_data)(f_) for f_ in filenames]
-            d_params_wargs = [dask.delayed(parse_m0dif_data)(f_) for f_ in filenames]
+            d_params_wargs = [dask.delayed(parse_m0dif_params)(f_) for f_ in filenames]
             d_alls = dask.delayed(list)([d_data,d_params_wargs])
             if client is None:
                 alls = dask.delayed(list)(d_alls).compute()
             else:
                 alls = client.gather(client.compute(d_alls))
+                
             data, params_warnings = alls
         else:
             data = [parse_m0dif_data(f_) for f_ in filenames]
