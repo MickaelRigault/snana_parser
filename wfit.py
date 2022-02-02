@@ -24,4 +24,4 @@ def read_wfit_files(filenames, filekeys=None, use_dask=True, client=None):
     else:
         alls = [read_wfit_file(f_) for f_ in filenames]
 
-    return pandas.concat(alls, keys=filekeys)
+    return pandas.concat(alls, keys=filekeys, axis=1)
