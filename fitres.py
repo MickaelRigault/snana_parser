@@ -9,7 +9,7 @@ import re
 
 def parse_fitresfile(filename, lochost=10, scale=0.1):
     """ """
-    fitparam = parse_fitresfile(filename)
+    fitparam = parse_fitres_fitparam(filename)
     data = parse_fitres_data(filename, hostgamma=fitparam["gamma"])
     return data, fitparam
 
