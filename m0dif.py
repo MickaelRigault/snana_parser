@@ -6,11 +6,11 @@ import pandas
 
 def parse_m0dif_data(filename):
     """ """
-    return pandas.read_csv(modif, comment="#", delim_whitespace=True).drop(columns="VARNAMES:")
+    return pandas.read_csv(filename, comment="#", delim_whitespace=True).drop(columns="VARNAMES:")
 
 def parse_m0dif_params(filename):
     """ """
-    params = [[l_.strip() for l_ in l.replace("#","").split(": ")] for l in open(modif).read().splitlines() 
+    params = [[l_.strip() for l_ in l.replace("#","").split(": ")] for l in open(filename).read().splitlines() 
               if l.startswith("#") if len(l)>5 and "Reference" not in l]
     warnings = [[p[0].replace("WARNING(","").replace(")",""),*p[1:]] for p in params if "WARNING" in p[0]]
     warnings = pandas.DataFrame(warnings, columns=["warning","message"]).set_index("warning")
@@ -29,7 +29,7 @@ class M0DIF():
         self.set_warnings(warnings)
 
     @classmethod
-    def from_fitres_files(cls, filenames, use_dask=True, filekeys=None, client=None):
+    def from_m0dif_files(cls, filenames, use_dask=True, filekeys=None, client=None):
         """ combine a list of FITRES file into a single FITES FILE Object """
         # Get the ID
         if filekeys is None:
