@@ -69,7 +69,7 @@ class FITRES():
     #      I/O          #
     # ================= #
     @classmethod
-    def from_fitresfile(cls, filenames, use_dask=True, filekeys=None):
+    def from_fitresfile(cls, filenames, use_dask=True, filekeys=None, client=None):
         """ combine a list of FITRES file into a single FITES FILE Object """
         # Get the ID
         if filekeys is None:
@@ -80,7 +80,10 @@ class FITRES():
         
         if use_dask:
             fileout = [dask.delayed(fitres.parse_fitresfile)(f_) for f_ in files]
-            alls = dask.delayed(list)(fileout).compute()
+            if client is None:
+                alls = dask.delayed(list)(fileout).compute()
+            else:
+                alls = client.gather(client.compute(fileout))
         else:
             alls = [fitres.parse_fitresfile(f_) for f_ in files]
             
