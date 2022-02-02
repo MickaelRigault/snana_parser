@@ -53,8 +53,8 @@ class M0DIF():
             params_warnings = [parse_m0dif_params(f_) for f_ in filenames]
             
         data_all = pandas.concat(data, keys=filekeys)
-        params = pandas.concat([d_ for d_,i_ in alls], axis=1, keys=filekeys)
-        warnings = pandas.concat([i_ for d_,i_ in alls], axis=1, keys=filekeys)
+        params = pandas.concat([d_ for d_,i_ in params_warnings], axis=1, keys=filekeys)
+        warnings = pandas.concat([i_ for d_,i_ in params_warnings], axis=1, keys=filekeys)
         return cls(data, params, warnings)
 
     @classmethod
