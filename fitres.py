@@ -69,7 +69,7 @@ class FITRES():
     #      I/O          #
     # ================= #
     @classmethod
-    def from_fitresfile(cls, filenames, use_dask=True, filekeys=None, client=None):
+    def from_fitres_files(cls, filenames, use_dask=True, filekeys=None, client=None):
         """ combine a list of FITRES file into a single FITES FILE Object """
         # Get the ID
         if filekeys is None:
@@ -92,7 +92,7 @@ class FITRES():
         return cls(data_all, fitparams)
     
     @classmethod
-    def from_fitresfile(cls, filename):
+    def from_fitres_file(cls, filename):
         """ """
         dataset, fitparam = parse_fitresfile(filename)
         return cls(dataset=dataset, fitparam=fitparam)
