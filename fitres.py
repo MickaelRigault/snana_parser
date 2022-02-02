@@ -73,7 +73,6 @@ class FITRES():
         """ combine a list of FITRES file into a single FITES FILE Object """
         # Get the ID
         if filekeys is None:
-            # vectorized version of int( file.split('/')[-2].split('-')[-1] )
             filekeys = np.asarray([file_.split("/")[-2].split("-")[-1]
                                    for file_ in filenames],
                       dtype="int")
