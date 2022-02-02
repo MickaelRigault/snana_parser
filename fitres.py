@@ -69,6 +69,26 @@ class FITRES():
     #      I/O          #
     # ================= #
     @classmethod
+    def from_fitresfile(cls, filenames, use_dask=True, filekeys=None):
+        """ combine a list of FITRES file into a single FITES FILE Object """
+        # Get the ID
+        if filekeys is None:
+            # vectorized version of int( file.split('/')[-2].split('-')[-1] )
+            filekeys = np.asarray([file_.split("/")[-2].split("-")[-1]
+                                   for file_ in files],
+                      dtype="int")
+        
+        if use_dask:
+            fileout = [dask.delayed(fitres.parse_fitresfile)(f_) for f_ in files]
+            alls = dask.delayed(list)(fileout).compute()
+        else:
+            alls = [fitres.parse_fitresfile(f_) for f_ in files]
+            
+        data_all = pandas.concat([d_ for d_,i_ in alls], keys=filekeys)
+        fitparams = pandas.concat([i_ for d_,i_ in alls], axis=1,keys=filekeys)
+        return cls(data_all, fitparams)
+    
+    @classmethod
     def from_fitresfile(cls, filename):
         """ """
         dataset, fitparam = parse_fitresfile(filename)
