@@ -80,13 +80,13 @@ class FITRES():
         
         if use_dask:
             import dask
-            fileout = [dask.delayed(fitres.parse_fitresfile)(f_) for f_ in filenames]
+            fileout = [dask.delayed(parse_fitresfile)(f_) for f_ in filenames]
             if client is None:
                 alls = dask.delayed(list)(fileout).compute()
             else:
                 alls = client.gather(client.compute(fileout))
         else:
-            alls = [fitres.parse_fitresfile(f_) for f_ in filenames]
+            alls = [parse_fitresfile(f_) for f_ in filenames]
             
         data_all = pandas.concat([d_ for d_,i_ in alls], keys=filekeys)
         fitparams = pandas.concat([i_ for d_,i_ in alls], axis=1, keys=filekeys)
