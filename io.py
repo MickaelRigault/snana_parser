@@ -77,7 +77,6 @@ class _DataFileIO_():
         """ """
         self._datafile = datafile
 
-
     def get_filepath(self, **kwargs):
         """ """
         local = kwargs
@@ -90,12 +89,13 @@ class _DataFileIO_():
 
         if len(gkeys) == 1:
             return gp.loc[values[0]]
-        
 
         lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
                                            dtype="object").T
         
-        return gp.xs(values, level=list(lkeys)).reset_index()
+        outdf = gp.xs(values, level=list(lkeys)).reset_index()
+        if len(outdf)==1:
+            return outdf.iloc[0].fullpath
 
         
     # =============== #
