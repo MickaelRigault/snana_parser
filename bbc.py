@@ -1,6 +1,6 @@
 
 import os
-import glob
+from glob import glob
 
 
 from snana_parser import fitres, wfit, m0dif
