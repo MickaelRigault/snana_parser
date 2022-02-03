@@ -77,13 +77,14 @@ class _DataFileIO_():
         """ """
         local = kwargs
         gkeys = list(local.keys())
+        values = list(local.values())        
         if len(gkeys)==0:
             raise ValueError("you must provide at least 1 colum to groupby")
         
         gp = self.datafile.groupby(gkeys)["fullpath"].apply(list)
 
         if len(gkeys) == 1:
-            return gp.loc[gkeys[0]]
+            return gp.loc[values]
         
 
         lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
