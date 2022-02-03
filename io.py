@@ -63,8 +63,13 @@ class _DataFileIO_():
             dirname = os.path.dirname(filepath)
             os.makedirs(dirname, exist_ok=True)
         
-        return getattr(self.datafile, f"to_{extension}")(filepath, **kwargs)    
+        return getattr(self.datafile, f"to_{extension}")(filepath, **kwargs)
 
+    @classmethod
+    def fetch_filepaths(cls, **kwargs):
+        """ shortcut to cls.load().get_filepath(**kwargs) """
+        return cls.load().get_filepath(**kwargs)
+    
     # =============== #
     #   Methods       #
     # =============== #        
