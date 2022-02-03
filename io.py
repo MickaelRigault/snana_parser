@@ -96,6 +96,7 @@ class _DataFileIO_():
         outdf = gp.xs(values, level=list(lkeys)).reset_index()
         if len(outdf)==1:
             return outdf.iloc[0].fullpath
+        return outdf
 
         
     # =============== #
