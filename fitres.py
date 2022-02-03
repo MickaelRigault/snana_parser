@@ -58,11 +58,57 @@ def parse_fitres_fitparam(filename):
 #                          #
 #                          #
 ############################
-class FITRES():
-
-    def __init__(self, dataset, fitparam=None):
+class _FITRES_BASE_():
+    # FITRES contains in addition the fitparam
+    def __init__(self, data):
         """ """
-        self.set_data(dataset)
+        self.set_data(data)
+
+    @classmethod
+    def from_fitres_file(cls, filename):
+        """ """
+        data = parse_fitres_data(filename)
+        return cls(data=data)
+
+    # ================= #
+    #    Methods        #
+    # ================= #
+    # --------- #
+    #  SETTER   #
+    # --------- #    
+    def set_data(self, data):
+        """ """
+        self._data = data
+                
+    # --------- #
+    #  GETTER   #
+    # --------- #
+    # - get data
+    def get_data(self, index=None, columns=None):
+        """  """
+        data = self.data.copy() if index is None else self.data.loc[index]
+        if columns is not None:
+            return data[columns]
+        
+        return data
+            
+    def get_splitindex(self, keys, split, method="qcut", **kwargs):
+        """ """
+        return getattr(pandas,method)(self.data[keys], split, **kwargs)
+    
+    # ================= #
+    #   Properties      #
+    # ================= #
+    @property
+    def data(self):
+        """ """
+        return self._data
+    
+class FITRES( _FITRES_BASE_ ):
+
+    def __init__(self, data, fitparam=None):
+        """ """
+        _ = super().__init__(data=data)
         self.set_fitparam(fitparam)
         
     # ================= #
@@ -94,39 +140,22 @@ class FITRES():
     @classmethod
     def from_fitres_file(cls, filename):
         """ """
-        dataset, fitparam = parse_fitresfile(filename)
-        return cls(dataset=dataset, fitparam=fitparam)
+        data, fitparam = parse_fitresfile(filename)
+        return cls(data=data, fitparam=fitparam)
 
     # ================= #
     #    Methods        #
     # ================= #
     # --------- #
     #  SETTER   #
-    # --------- #    
-    def set_data(self, data):
-        """ """
-        self._data = data
-        
+    # --------- #            
     def set_fitparam(self, fitparam):
         """ """
         self._fitparam = fitparam    
         
     # --------- #
     #  GETTER   #
-    # --------- #
-    # - get data
-    def get_data(self, index=None, columns=None):
-        """  """
-        data = self.data.copy() if index is None else self.data.loc[index]
-        if columns is not None:
-            return data[columns]
-        
-        return data
-            
-    def get_splitindex(self, keys, split, method="qcut", **kwargs):
-        """ """
-        return getattr(pandas,method)(self.data[keys], split, **kwargs)
-    
+    # --------- #x
     def get_massstep(self, masscut=10, index=None):
         """ """
         from .utils.stepfit import StepFitter
@@ -148,12 +177,7 @@ class FITRES():
 
     # ================= #
     #   Properties      #
-    # ================= #
-    @property
-    def data(self):
-        """ """
-        return self._data
-    
+    # ================= #    
     @property
     def fitparam(self):
         """ """

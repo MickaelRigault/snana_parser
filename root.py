@@ -1,6 +1,5 @@
 
 
-
 def snana_root_to_dataframe(filename, keys="SNANA"):
     """ """
     rootdata = uproot.open(filename)
