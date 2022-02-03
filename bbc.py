@@ -60,6 +60,8 @@ class BBCOutput():
                      ell_autoscale=True, 
                       set_label=True, label_fontsize="large",**kwargs):
         """ """
+        import matplotlib.pyplot as mpl
+        
         fig = mpl.figure()
         ax = fig.add_subplot(111)
 
@@ -67,7 +69,7 @@ class BBCOutput():
         x, y = self.fittedparams.loc[[xkey, ykey]].astype(float).values
 
         if conf_ellipses is not None:
-            from snana_parser.utils import ellipse
+            from .utils import ellipse
             for n_std in conf_ellipses:
                 ell_2 = ellipse.confidence_ellipse(x, y, 
                                                    n_std=n_std, alpha=ell_alpha, 
@@ -77,6 +79,7 @@ class BBCOutput():
 
         if scatter:
             ax.scatter(x, y, marker=marker, facecolor=mfc, edgecolor=mec, s=ms, **kwargs)
+            
         elif ell_autoscale:
             xrange = np.asarray([x.min(), x.max()])
             delt_x = xrange[1]-xrange[0]
