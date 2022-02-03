@@ -35,10 +35,14 @@ class BBCOutput():
     # ================= #
     #     Methods       #
     # ================= #
+    # -------- #
+    #  GETTER  #
+    # -------- #
     def set_fitres(self, fitres):
         """ """
         self._fitres = fitres
-
+        self._fittedparams = None
+        
     def set_m0dif(self, m0dif):
         """ """
         self._m0dif = m0dif
@@ -46,7 +50,47 @@ class BBCOutput():
     def set_wfit(self, wfit):
         """ """
         self._wfit = wfit
-        
+        self._fittedparams = None
+
+
+    def show_contours(self, xkey, ykey,
+                     scatter=True, conf_ellipses=[2,3],
+                     ell_fc="tab:grey", ell_ec=None, ell_alpha=0.2, ell_prop={},
+                     marker="o", mfc="C0", mec="0.5", ms=None, 
+                     ell_autoscale=True, 
+                      set_label=True, label_fontsize="large",**kwargs):
+        """ """
+        fig = mpl.figure()
+        ax = fig.add_subplot(111)
+
+
+        x, y = self.fittedparams.loc[[xkey, ykey]].astype(float).values
+
+        if conf_ellipses is not None:
+            from snana_parser.utils import ellipse
+            for n_std in conf_ellipses:
+                ell_2 = ellipse.confidence_ellipse(x, y, 
+                                                   n_std=n_std, alpha=ell_alpha, 
+                                                  facecolor=ell_fc, edgecolor=ell_ec, 
+                                                   **ell_prop)
+                ax.add_patch(ell_2)
+
+        if scatter:
+            ax.scatter(x, y, marker=marker, facecolor=mfc, edgecolor=mec, s=ms, **kwargs)
+        elif ell_autoscale:
+            xrange = np.asarray([x.min(), x.max()])
+            delt_x = xrange[1]-xrange[0]
+            yrange = np.asarray([y.min(), y.max()])
+            delt_y = yrange[1]-yrange[0]
+
+            ax.set_xlim(*(xrange+np.asarray([-0.1,0.1])*delt_x))
+            ax.set_ylim(*(yrange+np.asarray([-0.1,0.1])*delt_y))
+
+        if set_label:
+            ax.set_xlabel(xkey, fontsize=label_fontsize)
+            ax.set_ylabel(ykey, fontsize=label_fontsize)        
+
+        return fig
     # ================= #
     #     Propeties     #
     # ================= #
@@ -64,3 +108,11 @@ class BBCOutput():
     def wfit(self):
         """ """
         return self._wfit
+
+    @property
+    def fittedparams(self):
+        """ concat of wfit and fitres.fitparams """
+        if not hasattr(self,"_fittedparams") or self._fittedparams is None:
+            self._fittedparams = pandas.concat([self.fitres.fitparam, self.wfit])
+            
+        return self._fittedparams
