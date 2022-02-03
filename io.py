@@ -71,6 +71,26 @@ class _DataFileIO_():
     def set_datafile(self, datafile):
         """ """
         self._datafile = datafile
+
+
+    def get_filepath(self, **kwargs):
+        """ """
+        local = kwargs
+        gkeys = list(local.keys())
+        if len(gkeys)==0:
+            raise ValueError("you must provide at least 1 colum to groupby")
+        
+        gp = self.datafile.groupby(gkeys)["fullpath"].apply(list)
+
+        if len(gkeys) == 1:
+            return gp.loc[gkeys]
+        
+
+        lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
+                                           dtype="object").T
+        
+        return gp.xs(values, level=list(lkeys)).reset_index()
+
         
     # =============== #
     #   Properties    #
@@ -109,17 +129,7 @@ class LCFitIO(_DataFileIO_):
 
     def get_filepath(self, true_model, **kwargs):
         """ """
-        local = locals().copy()
-        local.pop("self")
-        local.pop("kwargs")    
-        local = {**local, **kwargs}
-        gkeys = list(local.keys())
-        gp = self.datafile.groupby(gkeys)["fullpath"].apply(list)
-
-        lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
-                                  dtype="object").T
-        
-        return gp.xs(values, level=list(lkeys)).reset_index()
+        return super().get_filepath(true_model=true_model, **kwargs)
     
     
 class BiasCorIO(_DataFileIO_):
@@ -160,15 +170,7 @@ class BiasCorIO(_DataFileIO_):
     
     def get_filepath(self, true_model, fit_model, which, muopt=0, fitopt=0, **kwargs):
         """ """
-        local = locals().copy()
-        local.pop("self")
-        local.pop("kwargs")    
-        local = {**local, **kwargs}
-        gkeys = list(local.keys())
-        gp = self.datafile.groupby(gkeys)["fullpath"].apply(list)
+        return super().get_filepath(true_model=true_model, fit_model=fit_model,
+                                    which=which, muopt=muopt, fitopt=fitopt, **kwargs)
 
-        lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
-                                  dtype="object").T
-        
-        return gp.xs(values, level=list(lkeys)).reset_index()
     
