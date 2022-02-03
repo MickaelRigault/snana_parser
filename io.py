@@ -84,7 +84,7 @@ class _DataFileIO_():
         gp = self.datafile.groupby(gkeys)["fullpath"].apply(list)
 
         if len(gkeys) == 1:
-            return gp.loc[values]
+            return gp.loc[values[0]]
         
 
         lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
