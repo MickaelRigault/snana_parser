@@ -56,9 +56,10 @@ class BBCOutput():
     def show_contours(self, xkey, ykey,
                      scatter=True, conf_ellipses=[2,3],
                      ell_fc="tab:grey", ell_ec=None, ell_alpha=0.2, ell_prop={},
-                     marker="o", mfc="C0", mec="0.5", ms=None, 
+                     ell_zorder=3, 
+                     marker="o", mfc="C0", mec="0.8", ms=None, scatter_zorder=5,
                      ell_autoscale=True, 
-                      set_label=True, label_fontsize="large",**kwargs):
+                     set_label=True, label_fontsize="large",**kwargs):
         """ """
         import matplotlib.pyplot as mpl
         
@@ -73,12 +74,14 @@ class BBCOutput():
             for n_std in conf_ellipses:
                 ell_2 = ellipse.confidence_ellipse(x, y, 
                                                    n_std=n_std, alpha=ell_alpha, 
-                                                  facecolor=ell_fc, edgecolor=ell_ec, 
+                                                  facecolor=ell_fc, edgecolor=ell_ec,
+                                                  zorder=ell_zorder,
                                                    **ell_prop)
                 ax.add_patch(ell_2)
 
         if scatter:
-            ax.scatter(x, y, marker=marker, facecolor=mfc, edgecolor=mec, s=ms, **kwargs)
+            ax.scatter(x, y, marker=marker, facecolor=mfc, edgecolor=mec, s=ms,
+                           zorder=scatter_zorder, **kwargs)
             
         elif ell_autoscale:
             xrange = np.asarray([x.min(), x.max()])
