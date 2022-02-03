@@ -107,6 +107,20 @@ class LCFitIO(_DataFileIO_):
         datafile[["true_model","survey"]] = split_name[0].str.split("_",expand=True).iloc[:,[-3,-2]]
         return datafile
 
+    def get_filepath(self, true_model, **kwargs):
+        """ """
+        local = locals().copy()
+        local.pop("self")
+        local.pop("kwargs")    
+        local = {**local, **kwargs}
+        gkeys = list(local.keys())
+        gp = self.datafile.groupby(gkeys)["fullpath"].apply(list)
+
+        lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
+                                  dtype="object").T
+        
+        return gp.xs(values, level=list(lkeys)).reset_index()
+    
     
 class BiasCorIO(_DataFileIO_):
     
@@ -156,17 +170,5 @@ class BiasCorIO(_DataFileIO_):
         lkeys, values = np.asarray([[k,v] for k,v in local.items() if v is not None and v not in ["*","all"]],
                                   dtype="object").T
         
-        return gp.xs(values, level=list(lkeys))
+        return gp.xs(values, level=list(lkeys)).reset_index()
     
-    
-    @property
-    def grouped_fullpath(self):
-        """ """
-        if not hasattr(self,"_grouped_fullpath") or self._grouped_fullpath is None:
-            self._grouped_fullpath = self.datafile.groupby(["true_model",
-                                                            "fit_model",
-                                                            "fitopt"
-                                                            "muopt",
-                                                            "which"]
-                                                          )["fullpath"].apply(list)
-        
