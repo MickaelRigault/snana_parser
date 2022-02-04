@@ -11,7 +11,7 @@ def get_merged_simdata_file(true_model):
 
 def build_merged_simdata(true_model, client, fileout = None, makedir=True):
     """ """
-    from .utils.root in read_snana_root
+    from .utils.root import read_snana_root
     if fileout is None:
         fileout = get_merged_simdata_file(true_model)
 
