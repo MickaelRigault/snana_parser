@@ -3,7 +3,7 @@ import uproot
 import numpy as np
 import pandas
 
-def read_snana_root(filename, keys="SNANA", use_dask=False):
+def read_snana_root(filename, keys="FITRES", use_dask=False):
     """ reads the given root file, loops over the keys inside the
     SNANA entry, converts the output in numpy array and finally build
     a DataFrame.
