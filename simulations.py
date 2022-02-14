@@ -1,6 +1,5 @@
 import dask
 import pandas as pd
-import simulations
 
 from .utils import root
 from .io import LCFitIO, SNANA__OUT_ROOTDIR
@@ -35,5 +34,5 @@ def build_merged_simdata(true_model, as_dask=None):
     cdf_t = d_cdf_t.compute()
     if as_dask == 'compute':
         return cdf_t
-    filename = simulations.get_merged_simdata_file(true_model)
+    filename = get_merged_simdata_file(true_model)
     return cdf_t.to_parquet(filename)
